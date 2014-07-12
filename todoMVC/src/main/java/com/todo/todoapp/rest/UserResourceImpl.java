@@ -5,10 +5,13 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.WebApplicationException;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import com.todo.todoapp.data.UserServiceDAO;
 import org.hibernate.Session;
@@ -25,11 +28,11 @@ public class UserResourceImpl implements UserResource {
 	@GET
 	@Produces("application/json")
 	public List<User> getUsers() {
-		List<User> userList = session.createCriteria(User.class).list();
-		if(userList != null){
+		try{
+			List<User> userList = session.createCriteria(User.class).list();
 			return userList;
-		}else{
-			return null;
+		}catch(Exception e){
+			throw new WebApplicationException(404);
 		}
 	}
 
@@ -37,21 +40,46 @@ public class UserResourceImpl implements UserResource {
 	@Path("persist")
 	@Consumes("application/json")
 	public Response persist(User user) {
-		userDAO.create(user);
-		// TODO Auto-generated method stub
-		return Response.ok().build();
+		try{
+			userDAO.create(user);
+			return Response.ok().build();
+		}catch(Exception e){
+			throw new WebApplicationException(404);
+		}
 	}
 
 	@GET
 	@Path("getuser/{id}")
 	@Produces("application/json")
 	public User getUser(@PathParam("id") Long id) {
-		User user = userDAO.getUserById(id) ;
-		if(user != null){
+		try{
+			User user = userDAO.getUserById(id) ;
 			return user;
-		}else{
-			return null;
+		}catch(Exception e){
+			throw new WebApplicationException(404);
 		}
 	}
-
+	
+	@DELETE
+	@Path("{id}")
+	public Response delete(@PathParam("id") Long id){
+		try{
+			User user = userDAO.getUserById(id);
+			userDAO.delete(user);
+			return Response.ok().build();
+		}catch(Exception e){
+			throw new WebApplicationException(404);
+		}
+	}
+	
+	@PUT
+	@Consumes("application/json")
+	public Response update(User user){
+		try{
+			userDAO.update(user);
+			return Response.ok().build();
+		}catch(Exception e){
+			throw new WebApplicationException(404);
+		}
+	}
 }
