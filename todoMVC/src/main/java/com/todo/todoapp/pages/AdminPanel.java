@@ -7,6 +7,9 @@ import org.hibernate.Session;
 import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.hibernate.annotations.*;
+
+
 
 public class AdminPanel {
 	
@@ -24,6 +27,7 @@ public class AdminPanel {
 		return Index.class;
 	}
 	
+	@CommitAfter
 	void wipeDatabase(String tableName){
 		
 		String hql = String.format( "delete from %s",tableName);
