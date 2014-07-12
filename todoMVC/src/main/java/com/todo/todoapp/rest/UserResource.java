@@ -27,9 +27,9 @@ public interface UserResource {
 	public Response persist(User user);
 
 	@GET
-	@Path("getuser/{id}")
+	@Path("getuser/{email}")
 	@Produces("application/json")
-	public User getUser(@PathParam("id") Long id);
+	public User getUser(@PathParam("email") String email);
 	
 	@DELETE
 	@Path("{id}")

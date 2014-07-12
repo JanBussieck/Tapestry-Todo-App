@@ -16,6 +16,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import com.todo.todoapp.data.UserServiceDAO;
 import org.hibernate.Session;
 import com.todo.todoapp.entities.User;
+import com.todo.todoapp.data.QueryParameters;
 
 public class UserResourceImpl implements UserResource {
 	
@@ -49,11 +50,11 @@ public class UserResourceImpl implements UserResource {
 	}
 
 	@GET
-	@Path("getuser/{id}")
+	@Path("getuser/{email}")
 	@Produces("application/json")
-	public User getUser(@PathParam("id") Long id) {
+	public User getUser(@PathParam("email") String email){
 		try{
-			User user = userDAO.getUserById(id) ;
+			User user = userDAO.findUniqueWithNamedQuery(User.BY_EMAIL, QueryParameters.with("email", email).parameters());
 			return user;
 		}catch(Exception e){
 			throw new WebApplicationException(404);
